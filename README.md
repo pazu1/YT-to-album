@@ -1,2 +1,2 @@
 # YouTube-Albums
-Download and parse albums from YouTube into audio files.
+Download albums from YouTube and split the track into individual audio files.
