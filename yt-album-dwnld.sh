@@ -1,32 +1,31 @@
 #!/bin/bash
 
-# Check to see if a pipe exists on stdin.
-url=$1
-timecodes=$2
-[[ $url ]] && [[ $timecodes ]] &&
-echo $url $timecodes  ||
+URL=$1
 
-# Invalid input, check if something was piped
+[ ! -f "$2" ] &&
+#! youtube-dl -o "dwnld.%(ext)s" --no-playlist --audio-format mp3 -x $URL &&
+echo "Invalid arguments. 
+First argument: url to a youtube video.
+Second argument: file containing timecodes and titles." && exit 1
 
-if [ -p /dev/stdin ]; then
-        echo "Data was piped to this script!"
-        # If we want to read the input line by line
-        while IFS= read line; do
-                echo "Line: ${line}"
-        done
-        # Or if we want to simply grab all the data, we can simply use cat instead
-        # cat
-else
-    echo "Invalid input. 
-    First argument is a url to a youtube video.
-    Second argument is a file containing the timecodes."
-fi
-#
-# TODO: 
-# take yt. URL as argument, 
-# take lines of timecodes and titles as second argument
-# download the audio from url using youtube-dl
-# split the audio using ffmpeg
-# Later: 
-#       add an interface script
-#       python crawler that returns youtube Tracklist as readable input
+FILE=$2
+    
+prevtime=00:00:00
+prevtitle=
+while read line
+do
+    # Match hh:mm:ss starting from the beginning
+    time=$(echo $line | egrep -o "^[0-9]{2}:[0-9]{2}:?[0-9]{2}?")
+    # Match everything after first space 
+    title=$(echo $line | egrep -o "[[:space:]].*" | sed 's/^ *//g')
+    
+    ! [ -z "$prevtitle" ] && echo $prevtitle $prevtime $time &&
+    ffmpeg -nostdin -loglevel error -i dwnld.mp3 -ss "$prevtime" -to "$time" -c copy "$prevtitle".mp3 &&
+    prevtime=$time
+    prevtitle=$title
+done <<<$(cat $FILE)
+# Last one is outside of the loop
+ffmpeg -nostdin -loglevel error -i dwnld.mp3 -ss "$prevtime" -c copy "$prevtitle".mp3
+echo $prevtitle $prevtime to end
+exit 0 
+
