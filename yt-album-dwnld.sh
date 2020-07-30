@@ -2,8 +2,8 @@
 
 URL=$1
 
-[ ! -f "$2" ] &&
-#! youtube-dl -o "dwnld.%(ext)s" --no-playlist --audio-format mp3 -x $URL &&
+[ ! -f "$2" ] ||
+! youtube-dl -o "dwnld.%(ext)s" --no-playlist --audio-format mp3 -x $URL &&
 echo "Invalid arguments. 
 First argument: url to a youtube video.
 Second argument: file containing timecodes and titles." && exit 1
@@ -24,6 +24,7 @@ do
     prevtime=$time
     prevtitle=$title
 done <<<$(cat $FILE)
+
 # Last one is outside of the loop
 ffmpeg -nostdin -loglevel error -i dwnld.mp3 -ss "$prevtime" -c copy "$prevtitle".mp3
 echo $prevtitle $prevtime to end
