@@ -24,9 +24,10 @@ do
     prevtime=$time
     prevtitle=$title
 done <<<$(cat $FILE)
-
 # Last one is outside of the loop
-ffmpeg -nostdin -loglevel error -i dwnld.mp3 -ss "$prevtime" -c copy "$prevtitle".mp3
+ffmpeg -nostdin -loglevel error -i dwnld.mp3 -ss "$prevtime" -c copy "${prevtitle}.mp3"
 echo $prevtitle $prevtime to end
+
+rm dwnld.mp3
 exit 0 
 

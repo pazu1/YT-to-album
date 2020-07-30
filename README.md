@@ -1,4 +1,4 @@
-# YouTube Albums
+# YT Albums
 
 Shell script that makes using youtube-dl more convenient for downloading entire albums by splitting the downloaded track into individual audio files with ffmpeg.
 
