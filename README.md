@@ -9,7 +9,7 @@ Just copy the script to some directory on your $PATH.
 ## Usage
 
 ```sh
-$ yt-albums [url] [songlist] [outputdir]
+$ yt-ta [url] [songlist] [outputdir]
 ```
 
 Songlist contains timecodes and titles in the following format
